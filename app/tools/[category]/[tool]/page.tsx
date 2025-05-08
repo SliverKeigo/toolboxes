@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import { Layout, Typography, Breadcrumb, Card, Button, Alert, Tooltip, theme } from "antd"
+import { Layout, Typography, Breadcrumb, Card, Button, Alert, Tooltip, theme, Spin } from "antd"
 import Link from "next/link"
 import { ArrowLeftOutlined, BulbOutlined, BulbFilled } from "@ant-design/icons"
 import UuidGenerator from "@/components/tools/uuid-generator"
@@ -10,7 +10,7 @@ import Base64Encoder from "@/components/tools/base64-encoder"
 import JsonFormatter from "@/components/tools/json-formatter"
 import JsonToTypeScript from "@/components/tools/json-to-typescript"
 import { useTheme } from "@/app/theme-config"
-import Image from "next/image"
+import { Suspense } from 'react'
 
 const { Content, Header } = Layout
 const { Title } = Typography
@@ -121,7 +121,6 @@ export default function ToolPage() {
         }}
       >
         <Title level={3} style={{ margin: 0, color: "white", display: "flex", alignItems: "center", gap: "8px" }}>
-          <Image src="/logo.svg" alt="工具箱" width={32} height={32} />
           <Link href="/" style={{ color: "white", textDecoration: "none" }}>
             工具站
           </Link>
@@ -158,7 +157,20 @@ export default function ToolPage() {
             />
           )}
 
-          {toolInfo.implemented && ToolComponent && <ToolComponent />}
+          {toolInfo.implemented && ToolComponent && (
+            <Suspense fallback={
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                minHeight: '200px' 
+              }}>
+                <Spin size="large" />
+              </div>
+            }>
+              <ToolComponent />
+            </Suspense>
+          )}
         </Card>
       </Content>
     </Layout>

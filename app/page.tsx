@@ -1,103 +1,144 @@
-import Image from "next/image";
+"use client"
+
+import { Layout, Menu, Typography, Card, Row, Col, theme } from "antd"
+import { CodeOutlined, FileTextOutlined, DatabaseOutlined, KeyOutlined } from "@ant-design/icons"
+import Link from "next/link"
+import { useState } from "react"
+
+const { Header, Content, Sider } = Layout
+const { Title, Text } = Typography
+
+// 工具分类
+const categories = [
+  {
+    key: "generator",
+    icon: <KeyOutlined />,
+    title: "生成工具",
+    tools: [{ key: "uuid-generator", title: "UUID生成器", implemented: true }],
+  },
+  {
+    key: "text",
+    icon: <FileTextOutlined />,
+    title: "文本工具",
+    tools: [{ key: "case-converter", title: "大小写转换", implemented: false }],
+  },
+  {
+    key: "encoding",
+    icon: <CodeOutlined />,
+    title: "编码转换",
+    tools: [{ key: "base64", title: "Base64编解码", implemented: false }],
+  },
+  {
+    key: "format",
+    icon: <DatabaseOutlined />,
+    title: "格式化工具",
+    tools: [{ key: "json-formatter", title: "JSON格式化", implemented: false }],
+  },
+]
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { token } = theme.useToken()
+  const [selectedCategory, setSelectedCategory] = useState<string>("all")
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          background: token.colorPrimary,
+          padding: "0 24px",
+        }}
+      >
+        <Title level={3} style={{ margin: 0, color: "white" }}>
+          工具站
+        </Title>
+      </Header>
+      <Layout>
+        <Sider width={200} style={{ background: token.colorBgContainer }} breakpoint="lg" collapsedWidth={0}>
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={["all"]}
+            selectedKeys={[selectedCategory]}
+            style={{ height: "100%", borderRight: 0 }}
+            onSelect={({ key }) => setSelectedCategory(key)}
+            items={[
+              {
+                key: "all",
+                icon: <KeyOutlined />,
+                label: "所有工具",
+              },
+              ...categories.map((category) => ({
+                key: category.key,
+                icon: category.icon,
+                label: category.title,
+              })),
+            ]}
+          />
+        </Sider>
+        <Layout style={{ padding: "0 24px 24px" }}>
+          <Content
+            style={{
+              padding: 24,
+              margin: 0,
+              background: token.colorBgContainer,
+              borderRadius: token.borderRadiusLG,
+              marginTop: 16,
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+            {selectedCategory !== "all" && (
+              <Title level={4} style={{ marginBottom: 16 }}>
+                {categories.find((c) => c.key === selectedCategory)?.title}
+              </Title>
+            )}
+
+            <Row gutter={[16, 16]}>
+              {categories
+                .filter((category) => selectedCategory === "all" || category.key === selectedCategory)
+                .flatMap((category) =>
+                  category.tools.map((tool) => (
+                    <Col xs={24} sm={12} md={8} lg={6} key={`${category.key}-${tool.key}`}>
+                      <Link href={`/tools/${category.key}/${tool.key}`} style={{ textDecoration: "none" }}>
+                        <Card
+                          hoverable
+                          style={{
+                            height: "100%",
+                            borderColor: tool.implemented ? token.colorPrimary : undefined,
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              textAlign: "center",
+                            }}
+                          >
+                            <div style={{ fontSize: 24, marginBottom: 8 }}>{category.icon}</div>
+                            <Title level={5} style={{ marginTop: 0, marginBottom: 4 }}>
+                              {tool.title}
+                            </Title>
+                            <Text type="secondary">{category.title}</Text>
+                            {tool.implemented && (
+                              <Text type="success" style={{ marginTop: 8 }}>
+                                已实现
+                              </Text>
+                            )}
+                            {!tool.implemented && (
+                              <Text type="warning" style={{ marginTop: 8 }}>
+                                开发中
+                              </Text>
+                            )}
+                          </div>
+                        </Card>
+                      </Link>
+                    </Col>
+                  )),
+                )}
+            </Row>
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
+  )
 }

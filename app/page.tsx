@@ -41,7 +41,10 @@ const categories = [
     key: "format",
     icon: <DatabaseOutlined />,
     title: "格式化工具",
-    tools: [{ key: "json-formatter", title: "JSON格式化", implemented: true }],
+    tools: [
+      { key: "json-formatter", title: "JSON格式化", implemented: true },
+      { key: "json-to-typescript", title: "JSON转TypeScript类型", implemented: true },
+    ],
   },
 ]
 

@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "工具站 | 实用在线工具集合",
-  description: "提供各种实用的在线工具，包括UUID生成器等",
+  description: "提供各种实用的在线工具",
 }
 
 export default function RootLayout({

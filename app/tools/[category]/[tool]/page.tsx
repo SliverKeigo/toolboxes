@@ -8,6 +8,7 @@ import UuidGenerator from "@/components/tools/uuid-generator"
 import CaseConverter from "@/components/tools/case-converter"
 import Base64Encoder from "@/components/tools/base64-encoder"
 import JsonFormatter from "@/components/tools/json-formatter"
+import JsonToTypeScript from "@/components/tools/json-to-typescript"
 import { useTheme } from "@/app/theme-config"
 
 const { Content, Header } = Layout
@@ -43,6 +44,11 @@ const toolMap = {
     component: JsonFormatter,
     implemented: true,
   },
+  "format/json-to-typescript": {
+    title: "JSON转TypeScript类型",
+    component: JsonToTypeScript,
+    implemented: true,
+  },
 }
 
 export default function ToolPage() {
@@ -54,7 +60,7 @@ export default function ToolPage() {
   const tool = params.tool as string
 
   const toolKey = `${category}/${tool}`
-  const toolInfo = toolMap[toolKey]
+  const toolInfo = toolMap[toolKey as keyof typeof toolMap]
 
   if (!toolInfo) {
     return (

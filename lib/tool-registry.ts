@@ -5,7 +5,7 @@ import UuidGenerator from "@/components/tools/uuid-generator"
 import CaseConverter from "@/components/tools/case-converter"
 import Base64Encoder from "@/components/tools/base64-encoder"
 import JsonFormatter from "@/components/tools/json-formatter"
-
+import JsonToTypeScript from "@/components/tools/json-to-typescript"
 export interface ToolInfo {
   key: string
   category: string
@@ -48,6 +48,14 @@ export const toolRegistry: Record<string, ToolInfo> = {
     title: "JSON格式化",
     description: "格式化和验证JSON数据",
     component: JsonFormatter,
+    implemented: true,
+  },
+  "json-to-typescript": {
+    key: "json-to-typescript",
+    category: "format",
+    title: "JSON转TypeScript类型",
+    description: "将JSON数据转换为TypeScript类型",
+    component: JsonToTypeScript,
     implemented: true,
   },
 }

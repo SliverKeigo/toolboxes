@@ -20,19 +20,19 @@ const categories = [
     key: "text",
     icon: <FileTextOutlined />,
     title: "文本工具",
-    tools: [{ key: "case-converter", title: "大小写转换", implemented: false }],
+    tools: [{ key: "case-converter", title: "大小写转换", implemented: true }],
   },
   {
     key: "encoding",
     icon: <CodeOutlined />,
     title: "编码转换",
-    tools: [{ key: "base64", title: "Base64编解码", implemented: false }],
+    tools: [{ key: "base64", title: "Base64编解码", implemented: true }],
   },
   {
     key: "format",
     icon: <DatabaseOutlined />,
     title: "格式化工具",
-    tools: [{ key: "json-formatter", title: "JSON格式化", implemented: false }],
+    tools: [{ key: "json-formatter", title: "JSON格式化", implemented: true }],
   },
 ]
 
@@ -119,11 +119,6 @@ export default function Home() {
                               {tool.title}
                             </Title>
                             <Text type="secondary">{category.title}</Text>
-                            {tool.implemented && (
-                              <Text type="success" style={{ marginTop: 8 }}>
-                                已实现
-                              </Text>
-                            )}
                             {!tool.implemented && (
                               <Text type="warning" style={{ marginTop: 8 }}>
                                 开发中

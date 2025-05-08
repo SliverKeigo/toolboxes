@@ -5,7 +5,9 @@ import { Layout, Typography, Breadcrumb, Card, Button, Alert } from "antd"
 import Link from "next/link"
 import { ArrowLeftOutlined } from "@ant-design/icons"
 import UuidGenerator from "@/components/tools/uuid-generator"
-import { ToolProps } from "@/components/tools/tool-interface"
+import CaseConverter from "@/components/tools/case-converter"
+import Base64Encoder from "@/components/tools/base64-encoder"
+import JsonFormatter from "@/components/tools/json-formatter"
 
 const { Content } = Layout
 const { Title } = Typography
@@ -19,7 +21,7 @@ const categoryMap = {
 }
 
 // 工具映射表
-const toolMap: Record<string, ToolProps> = {
+const toolMap = {
   "generator/uuid-generator": {
     title: "UUID生成器",
     component: UuidGenerator,
@@ -27,18 +29,18 @@ const toolMap: Record<string, ToolProps> = {
   },
   "text/case-converter": {
     title: "大小写转换",
-    component: null,
-    implemented: false,
+    component: CaseConverter,
+    implemented: true,
   },
   "encoding/base64": {
     title: "Base64编解码",
-    component: null,
-    implemented: false,
+    component: Base64Encoder,
+    implemented: true,
   },
   "format/json-formatter": {
     title: "JSON格式化",
-    component: null,
-    implemented: false,
+    component: JsonFormatter,
+    implemented: true,
   },
 }
 
@@ -49,7 +51,7 @@ export default function ToolPage() {
   const tool = params.tool as string
 
   const toolKey = `${category}/${tool}`
-  const toolInfo = toolMap[toolKey]
+  const toolInfo = toolMap[toolKey as keyof typeof toolMap]
 
   if (!toolInfo) {
     return (

@@ -1,6 +1,6 @@
 "use client"
 
-import { Layout, Menu, Typography, Card, Row, Col, theme, Button, Tooltip } from "antd"
+import { Layout, Menu, Typography, Card, Row, Col, theme, Button, Tooltip, Spin } from "antd"
 import {
   CodeOutlined,
   FileTextOutlined,
@@ -11,8 +11,9 @@ import {
   ProfileOutlined,
 } from "@ant-design/icons"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTheme } from "./theme-config"
+import router from "next/router"
 
 const { Header, Content, Sider } = Layout
 const { Title, Text } = Typography
@@ -52,6 +53,28 @@ export default function Home() {
   const { token } = theme.useToken()
   const { isDarkMode, toggleTheme } = useTheme()
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
+
+  const [isLoading, setIsLoading] = useState(true)
+
+  // 模拟页面加载
+  useEffect(() => {
+    // 设置一个短暂的延迟，以确保组件已经渲染
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+
+  if (isLoading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <Spin size="large" tip="加载中..." />
+      </div>
+    )
+  }
+
 
   return (
     <Layout style={{ minHeight: "100vh" }}>

@@ -10,7 +10,7 @@ import Base64Encoder from "@/components/tools/base64-encoder"
 import JsonFormatter from "@/components/tools/json-formatter"
 import JsonToTypeScript from "@/components/tools/json-to-typescript"
 import { useTheme } from "@/app/theme-config"
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 const { Content, Header } = Layout
 const { Title } = Typography
@@ -57,11 +57,31 @@ export default function ToolPage() {
   const router = useRouter()
   const { token } = theme.useToken()
   const { isDarkMode, toggleTheme } = useTheme()
+  const [isLoading, setIsLoading] = useState(true)
   const category = params.category as string
   const tool = params.tool as string
 
+  // 模拟页面加载
+  useEffect(() => {
+    // 设置一个短暂的延迟，以确保组件已经渲染
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   const toolKey = `${category}/${tool}`
   const toolInfo = toolMap[toolKey as keyof typeof toolMap]
+
+  if (isLoading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <Spin size="large" tip="加载中..." />
+      </div>
+    )
+  }
+
 
   if (!toolInfo) {
     return (

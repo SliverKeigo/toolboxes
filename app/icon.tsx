@@ -1,0 +1,34 @@
+import { ImageResponse } from 'next/og'
+
+export const runtime = 'edge'
+
+export const size = {
+  width: 32,
+  height: 32,
+}
+
+export const contentType = 'image/png'
+
+export default function Icon() {
+  return new ImageResponse(
+    (
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="6" y="10" width="20" height="16" rx="2" fill="#1677FF"/>
+        <path d="M13 10 L19 10 L19 6 C19 5.44772 18.5523 5 18 5 L14 5 C13.4477 5 13 5.44772 13 6 L13 10Z" fill="#1677FF"/>
+        <circle cx="16" cy="15" r="2" fill="white"/>
+        <rect x="15" y="13" width="2" height="4" rx="1" fill="white"/>
+        <rect x="13" y="18" width="6" height="1" rx="0.5" fill="white"/>
+        <rect x="13" y="20" width="6" height="1" rx="0.5" fill="white"/>
+      </svg>
+    ),
+    {
+      ...size,
+    }
+  )
+} 

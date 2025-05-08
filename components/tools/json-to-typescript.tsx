@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Card, Input, Button, Space, message, Typography } from "antd"
+import { Card, Input, Button, Space, message, Typography, Col, Divider } from "antd"
 import { CopyOutlined } from "@ant-design/icons"
 
 const { TextArea } = Input
-const { Title } = Typography
+const { Title, Text } = Typography
 
 function convertToTypeStructure(obj: any): any {
   if (obj === null) return "null"
@@ -192,6 +192,33 @@ export default function JsonToTypeScript() {
           <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{typeOutput}</pre>
         </Card>
       )}
+
+      <Col span={24}>
+        <Divider />
+        <Title level={4}>TypeScript类型转换说明</Title>
+        <ul style={{ paddingLeft: "20px" }}>
+          <li>
+            <Text strong>类型推断：</Text>
+            <Text>自动推断JSON数据的类型，包括字符串、数字、布尔值、数组和对象</Text>
+          </li>
+          <li>
+            <Text strong>嵌套对象：</Text>
+            <Text>自动处理嵌套的对象结构，生成对应的接口定义</Text>
+          </li>
+          <li>
+            <Text strong>数组处理：</Text>
+            <Text>智能处理数组类型，包括空数组和包含对象的数组</Text>
+          </li>
+          <li>
+            <Text strong>命名规范：</Text>
+            <Text>自动将属性名转换为符合TypeScript命名规范的接口名称</Text>
+          </li>
+          <li>
+            <Text strong>循环引用：</Text>
+            <Text>自动处理对象之间的循环引用关系</Text>
+          </li>
+        </ul>
+      </Col>
     </Space>
   )
 } 

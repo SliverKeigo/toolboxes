@@ -10,6 +10,7 @@ import Base64Encoder from "@/components/tools/base64-encoder"
 import JsonFormatter from "@/components/tools/json-formatter"
 import JsonToTypeScript from "@/components/tools/json-to-typescript"
 import { useTheme } from "@/app/theme-config"
+import Image from "next/image"
 
 const { Content, Header } = Layout
 const { Title } = Typography
@@ -119,7 +120,8 @@ export default function ToolPage() {
           padding: "0 24px",
         }}
       >
-        <Title level={3} style={{ margin: 0, color: "white" }}>
+        <Title level={3} style={{ margin: 0, color: "white", display: "flex", alignItems: "center", gap: "8px" }}>
+          <Image src="/logo.svg" alt="工具箱" width={32} height={32} />
           <Link href="/" style={{ color: "white", textDecoration: "none" }}>
             工具站
           </Link>

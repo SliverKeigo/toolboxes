@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 工具箱主体 -->
+  <rect x="96" y="160" width="320" height="256" rx="16" fill="#1677FF" stroke="#1677FF" stroke-width="16"/>
+  
+  <!-- 工具箱把手 -->
+  <path d="M208 160 L304 160 L304 96 C304 88.954 297.046 83 290 83 L222 83 C214.954 83 208 88.954 208 96 L208 160Z" fill="#1677FF" stroke="#1677FF" stroke-width="16"/>
+  
+  <!-- 工具箱内部工具图标 -->
+  <circle cx="256" cy="240" r="32" fill="white"/>
+  <rect x="240" y="208" width="32" height="64" rx="4" fill="white"/>
+  <rect x="208" y="288" width="96" height="16" rx="4" fill="white"/>
+  <rect x="208" y="320" width="96" height="16" rx="4" fill="white"/>
+</svg> 

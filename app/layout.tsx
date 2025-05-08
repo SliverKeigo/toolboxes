@@ -4,12 +4,18 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { AntdRegistry } from "@ant-design/nextjs-registry"
 import { ThemeProvider } from "./theme-config"
+import { ConfigProvider } from "antd"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "工具站 | 实用在线工具集合",
-  description: "提供各种实用的在线工具",
+  title: "在线工具箱",
+  description: "一个现代化的在线工具箱网站，提供各种实用的开发工具",
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({
@@ -21,7 +27,11 @@ export default function RootLayout({
     <html lang="zh-CN">
       <body className={inter.className}>
         <AntdRegistry>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <ConfigProvider>
+              {children}
+            </ConfigProvider>
+          </ThemeProvider>
         </AntdRegistry>
       </body>
     </html>

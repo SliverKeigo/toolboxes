@@ -1,9 +1,18 @@
 "use client"
 
-import { Layout, Menu, Typography, Card, Row, Col, theme } from "antd"
-import { CodeOutlined, FileTextOutlined, DatabaseOutlined, KeyOutlined } from "@ant-design/icons"
+import { Layout, Menu, Typography, Card, Row, Col, theme, Button, Tooltip } from "antd"
+import {
+  CodeOutlined,
+  FileTextOutlined,
+  DatabaseOutlined,
+  KeyOutlined,
+  BulbOutlined,
+  BulbFilled,
+  ProfileOutlined,
+} from "@ant-design/icons"
 import Link from "next/link"
 import { useState } from "react"
+import { useTheme } from "./theme-config"
 
 const { Header, Content, Sider } = Layout
 const { Title, Text } = Typography
@@ -38,6 +47,7 @@ const categories = [
 
 export default function Home() {
   const { token } = theme.useToken()
+  const { isDarkMode, toggleTheme } = useTheme()
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
 
   return (
@@ -46,6 +56,7 @@ export default function Home() {
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           background: token.colorPrimary,
           padding: "0 24px",
         }}
@@ -53,6 +64,14 @@ export default function Home() {
         <Title level={3} style={{ margin: 0, color: "white" }}>
           工具站
         </Title>
+        <Tooltip title={isDarkMode ? "切换到亮色模式" : "切换到暗色模式"}>
+          <Button
+            type="text"
+            icon={isDarkMode ? <BulbFilled style={{ color: "white" }} /> : <BulbOutlined style={{ color: "white" }} />}
+            onClick={toggleTheme}
+            style={{ color: "white" }}
+          />
+        </Tooltip>
       </Header>
       <Layout>
         <Sider width={200} style={{ background: token.colorBgContainer }} breakpoint="lg" collapsedWidth={0}>
@@ -65,7 +84,7 @@ export default function Home() {
             items={[
               {
                 key: "all",
-                icon: <KeyOutlined />,
+                icon: <ProfileOutlined />,
                 label: "所有工具",
               },
               ...categories.map((category) => ({

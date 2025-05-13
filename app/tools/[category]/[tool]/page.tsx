@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { Navbar, NavbarBrand, NavbarContent, Button } from "@heroui/react";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 
 import { categoryMap, categories, Category, Tool } from "@/lib/data";
@@ -52,9 +52,11 @@ const toolMap = {
 const SameCategoryTools = ({
   category,
   currentTool,
+  onNavigate,
 }: {
   category: string;
   currentTool: string;
+  onNavigate: (category: string, tool: string) => void;
 }) => {
   const sameCategoryTools =
     categories
@@ -67,12 +69,12 @@ const SameCategoryTools = ({
     <>
       {sameCategoryTools.map((otherTool: Tool) => (
         <li key={otherTool.key}>
-          <Link
-            className="block py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
-            href={`/tools/${category}/${otherTool.key}`}
+          <button
+            className="w-full text-left py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+            onClick={() => onNavigate(category, otherTool.key)}
           >
             {otherTool.title}
-          </Link>
+          </button>
         </li>
       ))}
     </>
@@ -85,9 +87,23 @@ export default function ToolPage() {
   const category = params.category as string;
   const tool = params.tool as string;
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // 只在客户端渲染完成后显示完整内容
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toolKey = `${category}/${tool}`;
   const toolInfo = toolMap[toolKey as keyof typeof toolMap];
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-hero-background dark:bg-gray-900">
+        <div className="w-16 h-16 border-4 border-t-hero-primary border-hero-primary/30 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!toolInfo) {
     return (
@@ -208,7 +224,7 @@ export default function ToolPage() {
     categoryMap[category as keyof typeof categoryMap] || "未知分类";
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-hero-background to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-hero-background to-blue-50 dark:from-gray-900 dark:to-gray-800 animate-fade-in">
       <Navbar className="sticky top-0 z-10 backdrop-blur-md border-b border-hero-border">
         <NavbarBrand>
           <Link className="font-bold text-xl no-underline" href="/">
@@ -262,7 +278,7 @@ export default function ToolPage() {
           </Link>
         </NavbarContent>
       </Navbar>
-      <div className="container mx-auto py-6 px-4 flex flex-1">
+      <div className="container mx-auto py-6 px-4 flex flex-1 animate-slide-in">
         <div className="w-64 hidden md:block">
           <div className="sticky top-20 pr-4">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
@@ -288,7 +304,11 @@ export default function ToolPage() {
                   {toolInfo.title}
                 </div>
               </li>
-              <SameCategoryTools category={category} currentTool={tool} />
+              <SameCategoryTools
+                category={category}
+                currentTool={tool}
+                onNavigate={(c, t) => router.push(`/tools/${c}/${t}`)}
+              />
             </ul>
           </div>
         </div>

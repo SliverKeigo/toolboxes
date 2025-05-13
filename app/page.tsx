@@ -13,8 +13,9 @@ import {
   Divider,
 } from "@heroui/react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 import { categories } from "@/lib/data";
 
@@ -29,9 +30,18 @@ const tabOptions = [
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+
+  // 使用浅路由优化工具导航
+  const navigateToTool = useCallback(
+    (category: string, tool: string) => {
+      router.push(`/tools/${category}/${tool}`, { scroll: false });
+    },
+    [router],
+  );
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-hero-background to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-hero-background to-blue-50 dark:from-gray-900 dark:to-gray-800 animate-fade-in">
       <Navbar className="sticky top-0 z-10 backdrop-blur-md border-b border-hero-border">
         <NavbarBrand>
           <span className="font-bold text-xl">工具站</span>
@@ -84,7 +94,7 @@ export default function Home() {
         </NavbarContent>
       </Navbar>
 
-      <div className="container mx-auto py-6 px-4 flex flex-1">
+      <div className="container mx-auto py-6 px-4 flex flex-1 animate-slide-in">
         <div className="w-64 hidden md:block">
           <div className="sticky top-20 pr-4">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
@@ -150,9 +160,8 @@ export default function Home() {
                     key={`${category.key}-${tool.key}`}
                     isHoverable
                     isPressable
-                    as={Link}
-                    className="border border-hero-border bg-hero-background"
-                    href={`/tools/${category.key}/${tool.key}`}
+                    className="border border-hero-border bg-hero-background cursor-pointer"
+                    onClick={() => navigateToTool(category.key, tool.key)}
                   >
                     <CardBody className="p-6 flex flex-col items-center text-center">
                       <h3 className="font-bold text-lg mb-2 text-hero-foreground group-hover:text-hero-primary transition-colors">

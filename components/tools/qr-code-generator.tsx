@@ -11,19 +11,21 @@ import {
   Radio,
   Tabs,
   Tab,
+  Spinner,
 } from "@heroui/react";
 import { QRCodeCanvas } from "qrcode.react";
 
-type InputType = "text" | "url" | "file" | "image" | "audio" | "video";
+type InputType = "text" | "url" | "image";
 type QRCodeStyle = "solid" | "gradient";
 
 export default function QRCodeGenerator() {
-  const [inputType, setInputType] = useState<InputType>("text");
+  const [activeTab, setActiveTab] = useState<string>("text");
   const [inputText, setInputText] = useState<string>("");
-  const [fileList, setFileList] = useState<File[]>([]);
   const [qrValue, setQrValue] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
 
   // 二维码样式设置
   const [qrStyle, setQrStyle] = useState<QRCodeStyle>("solid");
@@ -37,6 +39,16 @@ export default function QRCodeGenerator() {
 
   const qrRef = useRef<HTMLCanvasElement>(null);
 
+  // 处理标签切换
+  const handleTabChange = (type: InputType) => {
+    setActiveTab(type);
+
+    // 切换标签时清除输入内容
+    setInputText("");
+    setUploadedImageUrl("");
+    setQrValue("");
+  };
+
   // 处理文本输入
   const handleTextInput = () => {
     if (!inputText.trim()) {
@@ -48,24 +60,84 @@ export default function QRCodeGenerator() {
     setQrValue(inputText);
   };
 
-  // 处理文件上传
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileInput = e.target;
+  // Telegraph图片上传
+  const uploadToTelegraph = async (file: File) => {
+    setIsUploading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
 
-    if (!fileInput.files || !fileInput.files[0]) return;
+    try {
+      const formData = new FormData();
 
-    const file = fileInput.files[0];
-    const reader = new FileReader();
+      formData.append("image", file);
 
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        const base64String = (e.target.result as string).split(",")[1];
+      const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${imgbbApiKey}`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
-        setQrValue(base64String);
+      if (!response.ok) {
+        throw new Error(
+          `上传失败 (${response.status}): ${response.statusText}`,
+        );
       }
-    };
-    reader.readAsDataURL(file);
-    setFileList([file]);
+
+      const data = await response.json();
+
+      if (data.success && data.data && data.data.url) {
+        const imageUrl = data.data.url;
+
+        setUploadedImageUrl(imageUrl);
+        setQrValue(imageUrl);
+        setSuccessMessage("图片已上传成功，二维码已生成");
+        setTimeout(() => setSuccessMessage(""), 3000);
+      } else {
+        throw new Error(data.error?.message || "上传失败，无法获取图片链接");
+      }
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "图片上传失败，可能是网络问题或服务不可用",
+      );
+      setTimeout(() => setErrorMessage(""), 5000);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // 处理文件上传
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const fileInput = e.target;
+
+      if (!fileInput.files || !fileInput.files[0]) return;
+
+      const file = fileInput.files[0];
+      // 检查文件大小 - 增加到2MB
+      const fileSizeInMB = file.size / (1024 * 1024);
+
+      if (fileSizeInMB > 5) {
+        setErrorMessage(
+          `文件过大 (${fileSizeInMB.toFixed(2)}MB)，请使用小于5MB的文件`,
+        );
+        setTimeout(() => setErrorMessage(""), 5000);
+
+        return;
+      }
+
+      // 不压缩，直接上传
+      await uploadToTelegraph(file);
+    } catch (err) {
+      setErrorMessage(
+        `文件上传过程中发生错误,${err instanceof Error ? err.message : "未知错误"}`,
+      );
+      setTimeout(() => setErrorMessage(""), 3000);
+    }
   };
 
   // 下载二维码
@@ -175,6 +247,29 @@ export default function QRCodeGenerator() {
     }
   }, [qrStyle, gradientStart, gradientEnd, gradientDirection, qrValue]);
 
+  // 为二维码添加说明，如果是文件，限制文件大小
+  useEffect(() => {
+    if (qrValue && activeTab === "image") {
+      // 计算二维码的大小提示
+      const qrDataSizeKB = qrValue.length / 1024;
+      let qrCapacityWarning = "";
+
+      // 最佳、可扫描和超出容量的阈值
+      if (qrDataSizeKB > 2000) {
+        qrCapacityWarning = "二维码数据量极大，大多数扫描器无法读取";
+      } else if (qrDataSizeKB > 1000) {
+        qrCapacityWarning = "二维码数据量很大，部分扫描器可能无法读取";
+      } else if (qrDataSizeKB > 500) {
+        qrCapacityWarning = "二维码数据量较大，扫描时请确保图像清晰";
+      }
+
+      if (qrCapacityWarning) {
+        setErrorMessage(qrCapacityWarning);
+        setTimeout(() => setErrorMessage(""), 8000);
+      }
+    }
+  }, [qrValue, activeTab]);
+
   return (
     <div className="flex flex-col gap-6 w-full">
       {successMessage && (
@@ -195,43 +290,26 @@ export default function QRCodeGenerator() {
         <CardBody className="flex flex-col gap-6">
           <div>
             <h4 className="text-medium font-medium mb-2">输入类型</h4>
-            <Tabs aria-label="输入类型" color="primary" variant="bordered">
-              <Tab
-                key="text"
-                title="文本"
-                onClick={() => setInputType("text")}
-              />
-              <Tab key="url" title="网址" onClick={() => setInputType("url")} />
-              <Tab
-                key="file"
-                title="文件"
-                onClick={() => setInputType("file")}
-              />
-              <Tab
-                key="image"
-                title="图片"
-                onClick={() => setInputType("image")}
-              />
-              <Tab
-                key="audio"
-                title="音频"
-                onClick={() => setInputType("audio")}
-              />
-              <Tab
-                key="video"
-                title="视频"
-                onClick={() => setInputType("video")}
-              />
+            <Tabs
+              aria-label="输入类型"
+              color="primary"
+              selectedKey={activeTab}
+              variant="bordered"
+              onSelectionChange={(key) => handleTabChange(key as InputType)}
+            >
+              <Tab key="text" title="文本" />
+              <Tab key="url" title="网址" />
+              <Tab key="image" title="图片" />
             </Tabs>
           </div>
 
           <div>
             <h4 className="text-medium font-medium mb-2">输入内容</h4>
-            {inputType === "text" || inputType === "url" ? (
+            {activeTab === "text" || activeTab === "url" ? (
               <Textarea
                 minRows={6}
                 placeholder={
-                  inputType === "url" ? "请输入网址..." : "请输入文本..."
+                  activeTab === "url" ? "请输入网址..." : "请输入文本..."
                 }
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
@@ -239,32 +317,31 @@ export default function QRCodeGenerator() {
             ) : (
               <div className="flex flex-col gap-2">
                 <input
-                  accept={
-                    inputType === "image"
-                      ? "image/*"
-                      : inputType === "audio"
-                        ? "audio/*"
-                        : inputType === "video"
-                          ? "video/*"
-                          : "*"
-                  }
+                  accept="image/*"
                   className="hidden"
                   id="file-upload"
                   type="file"
                   onChange={handleFileUpload}
                 />
-                <Button
-                  color="primary"
-                  variant="flat"
-                  onClick={() =>
-                    document.getElementById("file-upload")?.click()
-                  }
-                >
-                  选择文件
-                </Button>
-                {fileList.length > 0 && (
-                  <span className="text-sm">{fileList[0].name}</span>
-                )}
+                <div className="flex flex-wrap gap-4 mb-2">
+                  <Button
+                    color="primary"
+                    isDisabled={isUploading}
+                    variant="flat"
+                    onClick={() =>
+                      document.getElementById("file-upload")?.click()
+                    }
+                  >
+                    {isUploading ? (
+                      <>
+                        <Spinner className="mr-2" size="sm" />
+                        上传中...
+                      </>
+                    ) : (
+                      "选择图片"
+                    )}
+                  </Button>
+                </div>
               </div>
             )}
           </div>
@@ -360,12 +437,15 @@ export default function QRCodeGenerator() {
             <Button
               color="primary"
               isDisabled={
-                inputType === "file" ||
-                inputType === "image" ||
-                inputType === "audio" ||
-                inputType === "video"
+                activeTab === "text" || activeTab === "url"
+                  ? !inputText.trim()
+                  : !uploadedImageUrl && !isUploading
               }
-              onClick={handleTextInput}
+              onClick={() => {
+                if (activeTab === "text" || activeTab === "url") {
+                  handleTextInput();
+                }
+              }}
             >
               生成二维码
             </Button>
@@ -416,12 +496,10 @@ export default function QRCodeGenerator() {
               <span>输入网址生成可跳转的二维码</span>
             </li>
             <li>
-              <span className="font-semibold">文件：</span>
-              <span>上传文件生成包含文件内容的二维码</span>
-            </li>
-            <li>
-              <span className="font-semibold">图片/音频/视频：</span>
-              <span>上传媒体文件生成包含媒体内容的二维码</span>
+              <span className="font-semibold">图片：</span>
+              <span>
+                上传图片生成含有图片链接的二维码，扫描二维码后可直接查看图片。
+              </span>
             </li>
             <li>
               <span className="font-semibold">样式：</span>
@@ -429,7 +507,7 @@ export default function QRCodeGenerator() {
             </li>
             <li>
               <span className="font-semibold">复制：</span>
-              <span>支持直接复制二维码图片到剪贴板</span>
+              <span>支持直接复制二维码图片或图片链接到剪贴板</span>
             </li>
           </ul>
         </CardBody>

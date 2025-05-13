@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type React from "react";
 
-import { Suspense } from "react";
 import { Inter } from "next/font/google";
 
 import "../styles/globals.css";
@@ -28,9 +27,7 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="zh-CN">
       <body suppressHydrationWarning className={inter.className}>
         <Providers themeProps={{ attribute: "class", enableSystem: true }}>
-          <div className="antialiased">
-            <Suspense>{children}</Suspense>
-          </div>
+          <div className="antialiased">{children}</div>
         </Providers>
       </body>
     </html>

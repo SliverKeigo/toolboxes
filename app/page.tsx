@@ -143,9 +143,11 @@ export default function Home() {
                       <h3 className="font-bold text-lg mb-2 text-hero-foreground group-hover:text-hero-primary transition-colors">
                         {tool.title}
                       </h3>
-                      <p className="text-hero-foreground/60 text-sm">
-                        {category.title}
-                      </p>
+                      {selectedCategory === "all" && (
+                        <p className="text-hero-foreground/60 text-sm">
+                          {category.title}
+                        </p>
+                      )}
                     </CardBody>
                     {!tool.implemented && (
                       <CardFooter className="py-2 text-center bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-t border-amber-200 dark:border-amber-800">

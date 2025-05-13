@@ -16,43 +16,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useTheme } from "next-themes";
 
-// 工具分类
-const categories = [
-  {
-    key: "generator",
-    icon: "🔑",
-    title: "生成工具",
-    tools: [{ key: "uuid-generator", title: "UUID生成器", implemented: true }],
-  },
-  {
-    key: "text",
-    icon: "📝",
-    title: "文本工具",
-    tools: [{ key: "case-converter", title: "大小写转换", implemented: true }],
-  },
-  {
-    key: "encoding",
-    icon: "💻",
-    title: "编码转换",
-    tools: [
-      { key: "base64", title: "Base64编解码", implemented: true },
-      { key: "qr-code-generator", title: "二维码生成器", implemented: true },
-    ],
-  },
-  {
-    key: "format",
-    icon: "🗄️",
-    title: "格式化工具",
-    tools: [
-      { key: "json-formatter", title: "JSON格式化", implemented: true },
-      {
-        key: "json-to-typescript",
-        title: "JSON转TypeScript类型",
-        implemented: true,
-      },
-    ],
-  },
-];
+import { categories } from "@/lib/data";
 
 const tabOptions = [
   { key: "all", title: "🔍 所有工具" },

@@ -6,20 +6,13 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { useTheme } from "next-themes";
 
+import { categoryMap, categories, Category, Tool } from "@/lib/data";
 import UuidGenerator from "@/components/tools/uuid-generator";
 import CaseConverter from "@/components/tools/case-converter";
 import Base64Encoder from "@/components/tools/base64-encoder";
 import JsonFormatter from "@/components/tools/json-formatter";
 import JsonToTypeScript from "@/components/tools/json-to-typescript";
 import QRCodeGenerator from "@/components/tools/qr-code-generator";
-
-// 工具分类映射表
-const categoryMap = {
-  text: "文本工具",
-  encoding: "编码转换",
-  format: "格式化工具",
-  generator: "生成工具",
-};
 
 // 工具映射表
 const toolMap = {
@@ -266,6 +259,19 @@ export default function ToolPage() {
                   {toolInfo.title}
                 </div>
               </li>
+              {categories
+                .find((cat: Category) => cat.key === category)
+                ?.tools.filter((t: Tool) => t.key !== tool)
+                .map((otherTool: Tool) => (
+                  <li key={otherTool.key}>
+                    <Link
+                      className="block py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+                      href={`/tools/${category}/${otherTool.key}`}
+                    >
+                      {otherTool.title}
+                    </Link>
+                  </li>
+                )) || []}
             </ul>
           </div>
         </div>

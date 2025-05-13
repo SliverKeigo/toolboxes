@@ -153,9 +153,6 @@ export default function Home() {
                     href={`/tools/${category.key}/${tool.key}`}
                   >
                     <CardBody className="p-6 flex flex-col items-center text-center">
-                      <div className="w-16 h-16 flex items-center justify-center text-3xl bg-hero-primary/10 rounded-full mb-4">
-                        {category.icon}
-                      </div>
                       <h3 className="font-bold text-lg mb-2 text-hero-foreground group-hover:text-hero-primary transition-colors">
                         {tool.title}
                       </h3>

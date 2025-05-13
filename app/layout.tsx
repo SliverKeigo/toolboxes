@@ -26,9 +26,11 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="zh-CN">
-      <body className={`${inter.className} antialiased`}>
-        <Providers>
-          <Suspense>{children}</Suspense>
+      <body suppressHydrationWarning className={inter.className}>
+        <Providers themeProps={{ attribute: "class", enableSystem: true }}>
+          <div className="antialiased">
+            <Suspense>{children}</Suspense>
+          </div>
         </Providers>
       </body>
     </html>

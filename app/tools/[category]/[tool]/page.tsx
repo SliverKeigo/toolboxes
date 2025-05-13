@@ -48,6 +48,37 @@ const toolMap = {
   },
 };
 
+// 提取同分类工具组件以改善数据处理
+const SameCategoryTools = ({
+  category,
+  currentTool,
+}: {
+  category: string;
+  currentTool: string;
+}) => {
+  const sameCategoryTools =
+    categories
+      .find((cat: Category) => cat.key === category)
+      ?.tools.filter((t: Tool) => t.key !== currentTool) || [];
+
+  if (sameCategoryTools.length === 0) return null;
+
+  return (
+    <>
+      {sameCategoryTools.map((otherTool: Tool) => (
+        <li key={otherTool.key}>
+          <Link
+            className="block py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+            href={`/tools/${category}/${otherTool.key}`}
+          >
+            {otherTool.title}
+          </Link>
+        </li>
+      ))}
+    </>
+  );
+};
+
 export default function ToolPage() {
   const params = useParams();
   const router = useRouter();
@@ -247,10 +278,6 @@ export default function ToolPage() {
               <li className="my-2 border-b border-gray-200 dark:border-gray-700" />
               <li>
                 <div className="flex items-center py-2 px-3 rounded-md bg-blue-50 text-blue-600 font-medium dark:bg-blue-900/20 dark:text-blue-400">
-                  {category === "generator" && "🔑"}
-                  {category === "text" && "📝"}
-                  {category === "encoding" && "💻"}
-                  {category === "format" && "🗄️"}
                   <span className="ml-2">{categoryName}</span>
                 </div>
               </li>
@@ -259,19 +286,7 @@ export default function ToolPage() {
                   {toolInfo.title}
                 </div>
               </li>
-              {categories
-                .find((cat: Category) => cat.key === category)
-                ?.tools.filter((t: Tool) => t.key !== tool)
-                .map((otherTool: Tool) => (
-                  <li key={otherTool.key}>
-                    <Link
-                      className="block py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
-                      href={`/tools/${category}/${otherTool.key}`}
-                    >
-                      {otherTool.title}
-                    </Link>
-                  </li>
-                )) || []}
+              <SameCategoryTools category={category} currentTool={tool} />
             </ul>
           </div>
         </div>

@@ -13,7 +13,7 @@ import Base64Encoder from "@/components/tools/base64-encoder";
 import JsonFormatter from "@/components/tools/json-formatter";
 import JsonToTypeScript from "@/components/tools/json-to-typescript";
 import QRCodeGenerator from "@/components/tools/qr-code-generator";
-
+import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
 // 工具映射表
 const toolMap = {
   "generator/uuid-generator": {
@@ -239,32 +239,9 @@ export default function ToolPage() {
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           >
             {theme === "light" ? (
-              <svg fill="none" height="20" viewBox="0 0 24 24" width="20">
-                <path
-                  d="M12 18.5C15.5899 18.5 18.5 15.5899 18.5 12C18.5 8.41015 15.5899 5.5 12 5.5C8.41015 5.5 5.5 8.41015 5.5 12C5.5 15.5899 8.41015 18.5 12 18.5Z"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                />
-                <path
-                  d="M19.14 19.14L19.01 19.01M19.01 4.99L19.14 4.86L19.01 4.99ZM4.86 19.14L4.99 19.01L4.86 19.14ZM12 2.08V2V2.08ZM12 22V21.92V22ZM2.08 12H2H2.08ZM22 12H21.92H22ZM4.99 4.99L4.86 4.86L4.99 4.99Z"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                />
-              </svg>
+              <SunFilledIcon size={20} />
             ) : (
-              <svg fill="none" height="20" viewBox="0 0 24 24" width="20">
-                <path
-                  d="M21.0672 11.8568L20.4253 11.469L21.0672 11.8568ZM12.1143 2.90397L12.5021 2.26207V2.26207L12.1143 2.90397ZM21.25 12C21.25 17.1086 17.1086 21.25 12 21.25V22.75C17.9371 22.75 22.75 17.9371 22.75 12H21.25ZM12 21.25C6.89137 21.25 2.75 17.1086 2.75 12H1.25C1.25 17.9371 6.06294 22.75 12 22.75V21.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75V1.25C6.06294 1.25 1.25 6.06294 1.25 12H2.75ZM15.5 14.25C12.3244 14.25 9.75 11.6756 9.75 8.5H8.25C8.25 12.5041 11.4959 15.75 15.5 15.75V14.25ZM20.4253 11.469C19.4172 13.1373 17.5882 14.25 15.5 14.25V15.75C18.1349 15.75 20.4407 14.3439 21.7092 12.2447L20.4253 11.469ZM9.75 8.5C9.75 6.41182 10.8627 4.5828 12.5021 3.56299L11.7265 2.26207C9.65324 3.5499 8.25 5.85292 8.25 8.5H9.75Z"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                />
-              </svg>
+              <MoonFilledIcon size={20} />
             )}
           </Button>
           <Link

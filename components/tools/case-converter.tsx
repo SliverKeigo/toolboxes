@@ -1,108 +1,134 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button, Textarea, Card, CardBody, CardHeader, RadioGroup, Radio, Divider } from "@heroui/react"
+import { useState } from "react";
+import {
+  Button,
+  Textarea,
+  Card,
+  CardBody,
+  CardHeader,
+  RadioGroup,
+  Radio,
+} from "@heroui/react";
 
-type CaseType = "upper" | "lower" | "title" | "sentence" | "camel" | "pascal" | "snake" | "kebab"
+type CaseType =
+  | "upper"
+  | "lower"
+  | "title"
+  | "sentence"
+  | "camel"
+  | "pascal"
+  | "snake"
+  | "kebab";
 
 export default function CaseConverter() {
-  const [inputText, setInputText] = useState<string>("")
-  const [outputText, setOutputText] = useState<string>("")
-  const [caseType, setCaseType] = useState<CaseType>("upper")
-  const [successMessage, setSuccessMessage] = useState<string>("")
-  const [errorMessage, setErrorMessage] = useState<string>("")
+  const [inputText, setInputText] = useState<string>("");
+  const [outputText, setOutputText] = useState<string>("");
+  const [caseType, setCaseType] = useState<CaseType>("upper");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   // 转换文本大小写
   const convertCase = () => {
     if (!inputText.trim()) {
-      setErrorMessage("请输入需要转换的文本")
-      setTimeout(() => setErrorMessage(""), 3000)
-      return
+      setErrorMessage("请输入需要转换的文本");
+      setTimeout(() => setErrorMessage(""), 3000);
+
+      return;
     }
 
-    let result = ""
+    let result = "";
+
     switch (caseType) {
       case "upper":
-        result = inputText.toUpperCase()
-        break
+        result = inputText.toUpperCase();
+        break;
       case "lower":
-        result = inputText.toLowerCase()
-        break
+        result = inputText.toLowerCase();
+        break;
       case "title":
         result = inputText
           .toLowerCase()
           .split(" ")
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ")
-        break
+          .join(" ");
+        break;
       case "sentence":
-        result = inputText.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase())
-        break
+        result = inputText
+          .toLowerCase()
+          .replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+        break;
       case "camel":
         result = inputText
           .toLowerCase()
           .replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase())
-          .replace(/^[A-Z]/, (c) => c.toLowerCase())
-        break
+          .replace(/^[A-Z]/, (c) => c.toLowerCase());
+        break;
       case "pascal":
         result = inputText
           .toLowerCase()
           .replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase())
-          .replace(/^[a-z]/, (c) => c.toUpperCase())
-        break
+          .replace(/^[a-z]/, (c) => c.toUpperCase());
+        break;
       case "snake":
         result = inputText
           .toLowerCase()
           .replace(/\s+/g, "_")
-          .replace(/[^a-zA-Z0-9_]/g, "")
-        break
+          .replace(/[^a-zA-Z0-9_]/g, "");
+        break;
       case "kebab":
         result = inputText
           .toLowerCase()
           .replace(/\s+/g, "-")
-          .replace(/[^a-zA-Z0-9-]/g, "")
-        break
+          .replace(/[^a-zA-Z0-9-]/g, "");
+        break;
       default:
-        result = inputText
+        result = inputText;
     }
 
-    setOutputText(result)
-  }
+    setOutputText(result);
+  };
 
   // 复制到剪贴板
   const copyToClipboard = () => {
     if (!outputText) {
-      setErrorMessage("没有可复制的内容")
-      setTimeout(() => setErrorMessage(""), 3000)
-      return
+      setErrorMessage("没有可复制的内容");
+      setTimeout(() => setErrorMessage(""), 3000);
+
+      return;
     }
 
     navigator.clipboard.writeText(outputText).then(
       () => {
-        setSuccessMessage("已复制到剪贴板")
-        setTimeout(() => setSuccessMessage(""), 3000)
+        setSuccessMessage("已复制到剪贴板");
+        setTimeout(() => setSuccessMessage(""), 3000);
       },
       () => {
-        setErrorMessage("复制失败")
-        setTimeout(() => setErrorMessage(""), 3000)
+        setErrorMessage("复制失败");
+        setTimeout(() => setErrorMessage(""), 3000);
       },
-    )
-  }
+    );
+  };
 
   // 交换输入和输出
   const swapTexts = () => {
-    const temp = inputText
-    setInputText(outputText)
-    setOutputText(temp)
-  }
+    const temp = inputText;
+
+    setInputText(outputText);
+    setOutputText(temp);
+  };
 
   return (
     <div className="flex flex-col gap-6 w-full">
       {successMessage && (
-        <div className="bg-success-100 text-success-500 p-2 rounded-md">{successMessage}</div>
+        <div className="bg-success-100 text-success-500 p-2 rounded-md">
+          {successMessage}
+        </div>
       )}
       {errorMessage && (
-        <div className="bg-danger-100 text-danger-500 p-2 rounded-md">{errorMessage}</div>
+        <div className="bg-danger-100 text-danger-500 p-2 rounded-md">
+          {errorMessage}
+        </div>
       )}
 
       <Card>
@@ -112,9 +138,9 @@ export default function CaseConverter() {
         <CardBody>
           <Textarea
             minRows={6}
+            placeholder="请输入需要转换的文本..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="请输入需要转换的文本..."
           />
         </CardBody>
       </Card>
@@ -125,12 +151,12 @@ export default function CaseConverter() {
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <RadioGroup 
-              orientation="horizontal"
+            <RadioGroup
               className="flex-wrap"
+              orientation="horizontal"
+              size="sm"
               value={caseType}
               onValueChange={(value) => setCaseType(value as CaseType)}
-              size="sm"
             >
               <Radio value="upper">大写</Radio>
               <Radio value="lower">小写</Radio>
@@ -142,21 +168,25 @@ export default function CaseConverter() {
               <Radio value="kebab">短横线格式</Radio>
             </RadioGroup>
           </div>
-          
+
           <div className="flex gap-2">
-            <Button 
-              color="primary" 
-              onClick={convertCase}
-            >
+            <Button color="primary" onClick={convertCase}>
               转换
             </Button>
-            <Button 
-              color="primary" 
-              variant="flat" 
-              onClick={swapTexts}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+            <Button color="primary" variant="flat" onClick={swapTexts}>
+              <svg
+                className="h-4 w-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                />
               </svg>
               交换输入输出
             </Button>
@@ -167,20 +197,24 @@ export default function CaseConverter() {
       <Card>
         <CardHeader className="flex justify-between items-center">
           <h3 className="text-lg font-medium">转换结果</h3>
-          <Button 
-            color="primary" 
-            variant="flat" 
-            onClick={copyToClipboard}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-1">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          <Button color="primary" variant="flat" onClick={copyToClipboard}>
+            <svg
+              className="mr-1"
+              fill="none"
+              height="20"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              width="20"
+            >
+              <rect height="13" rx="2" ry="2" width="13" x="9" y="9" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>
             复制结果
           </Button>
         </CardHeader>
         <CardBody>
-          <Textarea minRows={6} value={outputText} isReadOnly />
+          <Textarea isReadOnly minRows={6} value={outputText} />
         </CardBody>
       </Card>
 
@@ -204,11 +238,15 @@ export default function CaseConverter() {
             </li>
             <li>
               <span className="font-semibold">句子格式：</span>
-              <span>每个句子的首字母大写。例如：Hello world. This is a sentence.</span>
+              <span>
+                每个句子的首字母大写。例如：Hello world. This is a sentence.
+              </span>
             </li>
             <li>
               <span className="font-semibold">驼峰格式：</span>
-              <span>第一个单词小写，后续单词首字母大写，无空格。例如：helloWorld</span>
+              <span>
+                第一个单词小写，后续单词首字母大写，无空格。例如：helloWorld
+              </span>
             </li>
             <li>
               <span className="font-semibold">帕斯卡格式：</span>
@@ -226,5 +264,5 @@ export default function CaseConverter() {
         </CardBody>
       </Card>
     </div>
-  )
+  );
 }

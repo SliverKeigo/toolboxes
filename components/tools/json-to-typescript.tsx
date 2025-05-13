@@ -1,151 +1,172 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button, Input, Textarea, Card, CardBody, CardHeader, CardFooter, useDisclosure } from "@heroui/react"
+import { useState } from "react";
+import {
+  Button,
+  Input,
+  Textarea,
+  Card,
+  CardBody,
+  CardHeader,
+} from "@heroui/react";
 
 function convertToTypeStructure(obj: any): any {
-  if (obj === null) return "null"
-  
-  if (typeof obj !== 'object') {
-    return typeof obj
+  if (obj === null) return "null";
+
+  if (typeof obj !== "object") {
+    return typeof obj;
   }
-  
+
   if (Array.isArray(obj)) {
-    if (obj.length === 0) return "array"
-    return [convertToTypeStructure(obj[0])]
+    if (obj.length === 0) return "array";
+
+    return [convertToTypeStructure(obj[0])];
   }
-  
-  const result: Record<string, any> = {}
+
+  const result: Record<string, any> = {};
+
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
-      result[key] = convertToTypeStructure(obj[key])
+      result[key] = convertToTypeStructure(obj[key]);
     }
   }
-  
-  return result
+
+  return result;
 }
 
 function normalizeTypeName(name: string): string {
   return name
-    .replace(/[^a-zA-Z0-9]/g, ' ')
-    .split(' ')
+    .replace(/[^a-zA-Z0-9]/g, " ")
+    .split(" ")
     .map((word, index) => {
       if (index === 0) {
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       }
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     })
-    .join('')
+    .join("");
 }
 
 function inferType(value: any): string {
-  if (value === null) return 'null'
-  if (typeof value === 'string') {
+  if (value === null) return "null";
+  if (typeof value === "string") {
     if (/^\d{4}-\d{2}-\d{2}/.test(value)) {
-      return 'Date'
+      return "Date";
     }
-    if (value.startsWith('http://') || value.startsWith('https://')) {
-      return 'string'
+    if (value.startsWith("http://") || value.startsWith("https://")) {
+      return "string";
     }
-    return 'string'
+
+    return "string";
   }
-  if (typeof value === 'number') {
-    if (Number.isInteger(value)) return 'number'
-    return 'number'
+  if (typeof value === "number") {
+    if (Number.isInteger(value)) return "number";
+
+    return "number";
   }
-  if (typeof value === 'boolean') return 'boolean'
+  if (typeof value === "boolean") return "boolean";
   if (Array.isArray(value)) {
-    if (value.length === 0) return 'any[]'
-    return `${inferType(value[0])}[]`
+    if (value.length === 0) return "any[]";
+
+    return `${inferType(value[0])}[]`;
   }
-  if (typeof value === 'object') return 'object'
-  return 'any'
+  if (typeof value === "object") return "object";
+
+  return "any";
 }
 
-function generateTypeDefinition(typeStruct: any, rootName = 'Root'): string {
-  const typeMap = new Map()
-  const visited = new Set()
-  
+function generateTypeDefinition(typeStruct: any, rootName = "Root"): string {
+  const typeMap = new Map();
+  const visited = new Set();
+
   function processType(obj: any, typeName: string) {
-    if (visited.has(typeName)) return
-    visited.add(typeName)
-    
-    let typeDef = `export interface ${typeName} {\n`
-    
+    if (visited.has(typeName)) return;
+    visited.add(typeName);
+
+    let typeDef = `export interface ${typeName} {\n`;
+
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
-        const value = obj[key]
-        const pascalCaseKey = normalizeTypeName(key)
-        
-        if (typeof value === 'string') {
-          const inferredType = inferType(value)
-          typeDef += `  ${key}: ${inferredType};\n`
+        const value = obj[key];
+        const pascalCaseKey = normalizeTypeName(key);
+
+        if (typeof value === "string") {
+          const inferredType = inferType(value);
+
+          typeDef += `  ${key}: ${inferredType};\n`;
         } else if (Array.isArray(value)) {
-          if (typeof value[0] === 'string') {
-            const inferredType = inferType(value[0])
-            typeDef += `  ${key}: ${inferredType}[];\n`
+          if (typeof value[0] === "string") {
+            const inferredType = inferType(value[0]);
+
+            typeDef += `  ${key}: ${inferredType}[];\n`;
           } else {
-            const arrayTypeName = `${pascalCaseKey}Item`
-            typeMap.set(arrayTypeName, value[0])
-            processType(value[0], arrayTypeName)
-            typeDef += `  ${key}: ${arrayTypeName}[];\n`
+            const arrayTypeName = `${pascalCaseKey}Item`;
+
+            typeMap.set(arrayTypeName, value[0]);
+            processType(value[0], arrayTypeName);
+            typeDef += `  ${key}: ${arrayTypeName}[];\n`;
           }
-        } else if (typeof value === 'object') {
-          const nestedTypeName = pascalCaseKey
-          typeMap.set(nestedTypeName, value)
-          processType(value, nestedTypeName)
-          typeDef += `  ${key}: ${nestedTypeName};\n`
+        } else if (typeof value === "object") {
+          const nestedTypeName = pascalCaseKey;
+
+          typeMap.set(nestedTypeName, value);
+          processType(value, nestedTypeName);
+          typeDef += `  ${key}: ${nestedTypeName};\n`;
         }
       }
     }
-    
-    typeDef += '}\n\n'
-    typeMap.set(typeName, typeDef)
+
+    typeDef += "}\n\n";
+    typeMap.set(typeName, typeDef);
   }
-  
-  processType(typeStruct, normalizeTypeName(rootName))
-  
-  let result = ''
-  const sortedTypes = Array.from(typeMap.keys()).sort()
+
+  processType(typeStruct, normalizeTypeName(rootName));
+
+  let result = "";
+  const sortedTypes = Array.from(typeMap.keys()).sort();
+
   for (const type of sortedTypes) {
-    if (typeof typeMap.get(type) === 'string') {
-      result += typeMap.get(type)
+    if (typeof typeMap.get(type) === "string") {
+      result += typeMap.get(type);
     }
   }
-  
-  return result
+
+  return result;
 }
 
-function jsonToTypeScript(jsonObj: any, rootName = 'Root'): string {
+function jsonToTypeScript(jsonObj: any, rootName = "Root"): string {
   try {
-    const typeStruct = convertToTypeStructure(jsonObj)
-    return generateTypeDefinition(typeStruct, rootName)
+    const typeStruct = convertToTypeStructure(jsonObj);
+
+    return generateTypeDefinition(typeStruct, rootName);
   } catch (error) {
-    throw new Error('JSON 解析失败：' + (error as Error).message)
+    throw new Error("JSON 解析失败：" + (error as Error).message);
   }
 }
 
 export default function JsonToTypeScript() {
-  const [jsonInput, setJsonInput] = useState("")
-  const [typeOutput, setTypeOutput] = useState("")
-  const [rootName, setRootName] = useState("Root")
-  const [errorMessage, setErrorMessage] = useState("")
+  const [jsonInput, setJsonInput] = useState("");
+  const [typeOutput, setTypeOutput] = useState("");
+  const [rootName, setRootName] = useState("Root");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleConvert = () => {
     try {
-      setErrorMessage("")
-      const jsonObj = JSON.parse(jsonInput)
-      const result = jsonToTypeScript(jsonObj, rootName)
-      setTypeOutput(result)
+      setErrorMessage("");
+      const jsonObj = JSON.parse(jsonInput);
+      const result = jsonToTypeScript(jsonObj, rootName);
+
+      setTypeOutput(result);
     } catch (error) {
-      setErrorMessage('JSON 格式错误，请检查输入')
+      setErrorMessage(`JSON 格式错误，请检查输入: ${(error as Error).message}`);
     }
-  }
+  };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(typeOutput)
+    navigator.clipboard.writeText(typeOutput);
     // 复制成功提示可以使用浏览器原生API或第三方库
-  }
+  };
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -154,29 +175,24 @@ export default function JsonToTypeScript() {
           <div>
             <h3 className="text-lg font-medium mb-2">根类型名称</h3>
             <Input
+              className="max-w-xs"
+              placeholder="输入根类型名称"
               value={rootName}
               onChange={(e) => setRootName(e.target.value)}
-              placeholder="输入根类型名称"
-              className="max-w-xs"
             />
           </div>
           <div>
             <h3 className="text-lg font-medium mb-2">JSON 输入</h3>
             <Textarea
+              maxRows={12}
+              minRows={6}
+              placeholder="请输入 JSON 数据"
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
-              placeholder="请输入 JSON 数据"
-              minRows={6}
-              maxRows={12}
             />
-            {errorMessage && (
-              <p className="text-danger mt-2">{errorMessage}</p>
-            )}
+            {errorMessage && <p className="text-danger mt-2">{errorMessage}</p>}
           </div>
-          <Button 
-            color="primary" 
-            onClick={handleConvert}
-          >
+          <Button color="primary" onClick={handleConvert}>
             转换为 TypeScript 类型
           </Button>
         </CardBody>
@@ -186,20 +202,25 @@ export default function JsonToTypeScript() {
         <Card>
           <CardHeader className="flex justify-between items-center">
             <h3 className="text-lg font-medium">TypeScript 类型定义</h3>
-            <Button
-              color="primary"
-              variant="flat"
-              onClick={handleCopy}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            <Button color="primary" variant="flat" onClick={handleCopy}>
+              <svg
+                fill="none"
+                height="20"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="20"
+              >
+                <rect height="13" rx="2" ry="2" width="13" x="9" y="9" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
               </svg>
               复制
             </Button>
           </CardHeader>
           <CardBody>
-            <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-auto whitespace-pre-wrap">{typeOutput}</pre>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-auto whitespace-pre-wrap">
+              {typeOutput}
+            </pre>
           </CardBody>
         </Card>
       )}
@@ -212,7 +233,9 @@ export default function JsonToTypeScript() {
           <ul className="list-disc pl-6 space-y-2">
             <li>
               <span className="font-semibold">类型推断：</span>
-              <span>自动推断JSON数据的类型，包括字符串、数字、布尔值、数组和对象</span>
+              <span>
+                自动推断JSON数据的类型，包括字符串、数字、布尔值、数组和对象
+              </span>
             </li>
             <li>
               <span className="font-semibold">嵌套对象：</span>
@@ -234,5 +257,5 @@ export default function JsonToTypeScript() {
         </CardBody>
       </Card>
     </div>
-  )
-} 
+  );
+}

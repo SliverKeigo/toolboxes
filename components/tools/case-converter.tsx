@@ -150,7 +150,7 @@ export default function CaseConverter() {
           <h3 className="text-lg font-medium">转换选项</h3>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-1 gap-2">
             <RadioGroup
               className="flex-wrap"
               orientation="horizontal"

@@ -91,7 +91,7 @@ export default function ToolPage() {
 
   if (!toolInfo) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-hero-background to-blue-50 dark:from-gray-900 dark:to-gray-800">
         <Navbar className="sticky top-0 z-10 backdrop-blur-md border-b border-hero-border">
           <NavbarBrand>
             <Link className="font-bold text-xl no-underline" href="/">
@@ -169,7 +169,7 @@ export default function ToolPage() {
           </div>
 
           <div className="flex-1 pl-0 md:pl-6 flex items-center justify-center">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden max-w-md w-full">
+            <div className="bg-hero-background dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden max-w-md w-full">
               <div className="p-8 flex flex-col items-center text-center">
                 <div className="w-16 h-16 flex items-center justify-center bg-red-50 dark:bg-red-900/20 rounded-full mb-4 text-red-600 dark:text-red-400">
                   <svg
@@ -208,7 +208,7 @@ export default function ToolPage() {
     categoryMap[category as keyof typeof categoryMap] || "未知分类";
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-hero-background to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <Navbar className="sticky top-0 z-10 backdrop-blur-md border-b border-hero-border">
         <NavbarBrand>
           <Link className="font-bold text-xl no-underline" href="/">
@@ -265,7 +265,9 @@ export default function ToolPage() {
       <div className="container mx-auto py-6 px-4 flex flex-1">
         <div className="w-64 hidden md:block">
           <div className="sticky top-20 pr-4">
-            <h2 className="text-xl font-bold mb-4">工具分类</h2>
+            <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+              工具分类
+            </h2>
             <ul className="space-y-1">
               <li>
                 <Link
@@ -277,12 +279,12 @@ export default function ToolPage() {
               </li>
               <li className="my-2 border-b border-gray-200 dark:border-gray-700" />
               <li>
-                <div className="flex items-center py-2 px-3 rounded-md bg-blue-50 text-blue-600 font-medium dark:bg-blue-900/20 dark:text-blue-400">
-                  <span className="ml-2">{categoryName}</span>
+                <div className="flex items-center py-2 px-3 rounded-md bg-hero-primary/10 text-hero-primary font-medium dark:bg-hero-primary-dark/20 dark:text-hero-primary-dark">
+                  <span>{categoryName}</span>
                 </div>
               </li>
               <li>
-                <div className="py-2 px-3 rounded-md bg-blue-100 text-blue-700 font-medium dark:bg-blue-800/30 dark:text-blue-300">
+                <div className="py-2 px-3 rounded-md bg-hero-secondary/10 text-hero-secondary font-medium dark:bg-hero-secondary-dark/20 dark:text-hero-secondary-dark">
                   {toolInfo.title}
                 </div>
               </li>
@@ -295,17 +297,17 @@ export default function ToolPage() {
           <div className="flex flex-col gap-4 items-start mb-6">
             <nav className="flex text-sm mb-1">
               <Link
-                className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                className="text-gray-600 hover:text-hero-primary dark:text-gray-400 dark:hover:text-hero-primary-dark"
                 href="/"
               >
                 首页
               </Link>
-              <span className="mx-2 text-gray-400">/</span>
+              <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>
               <span className="text-gray-600 dark:text-gray-400">
                 {categoryName}
               </span>
-              <span className="mx-2 text-gray-400">/</span>
-              <span className="text-blue-600 dark:text-blue-400 font-medium">
+              <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>
+              <span className="text-hero-primary dark:text-hero-primary-dark font-medium">
                 {toolInfo.title}
               </span>
             </nav>
@@ -315,7 +317,7 @@ export default function ToolPage() {
             </h1>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="bg-hero-background dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-6">
               {!toolInfo.implemented && (
                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-600 dark:text-amber-400 p-4 rounded-lg mb-4">

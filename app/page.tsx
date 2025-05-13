@@ -87,11 +87,13 @@ export default function Home() {
       <div className="container mx-auto py-6 px-4 flex flex-1">
         <div className="w-64 hidden md:block">
           <div className="sticky top-20 pr-4">
-            <h2 className="text-xl font-bold mb-4">工具分类</h2>
+            <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+              工具分类
+            </h2>
             <ul className="space-y-1">
               <li>
                 <Button
-                  className={`w-full justify-start ${selectedCategory === "all" ? "bg-hero-primary/10 text-hero-primary font-medium" : ""}`}
+                  className={`w-full justify-start ${selectedCategory === "all" ? "bg-hero-primary/10 text-hero-primary font-medium dark:bg-hero-primary-dark/20 dark:text-hero-primary-dark" : ""}`}
                   variant={selectedCategory === "all" ? "flat" : "light"}
                   onClick={() => setSelectedCategory("all")}
                 >
@@ -102,7 +104,7 @@ export default function Home() {
               {categories.map((category) => (
                 <li key={category.key}>
                   <Button
-                    className={`w-full justify-start ${selectedCategory === category.key ? "bg-hero-primary/10 text-hero-primary font-medium" : ""}`}
+                    className={`w-full justify-start ${selectedCategory === category.key ? "bg-hero-primary/10 text-hero-primary font-medium dark:bg-hero-primary-dark/20 dark:text-hero-primary-dark" : ""}`}
                     variant={
                       selectedCategory === category.key ? "flat" : "light"
                     }

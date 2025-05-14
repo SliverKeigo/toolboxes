@@ -54,6 +54,58 @@ export const categories: Category[] = [
         title: "JSON转TypeScript类型",
         implemented: true,
       },
+      {
+        key: "css-beautifier",
+        title: "CSS美化器",
+        implemented: true,
+      },
     ],
   },
 ];
+
+import UuidGenerator from "@/components/tools/uuid-generator";
+import CaseConverter from "@/components/tools/case-converter";
+import Base64Encoder from "@/components/tools/base64-encoder";
+import JsonFormatter from "@/components/tools/json-formatter";
+import JsonToTypeScript from "@/components/tools/json-to-typescript";
+import QRCodeGenerator from "@/components/tools/qr-code-generator";
+import CssBeautifier from "@/components/tools/css-beautifier";
+
+// 工具映射表
+export const toolMap = {
+  "generator/uuid-generator": {
+    title: "UUID生成器",
+    component: UuidGenerator,
+    implemented: true,
+  },
+  "text/case-converter": {
+    title: "大小写转换",
+    component: CaseConverter,
+    implemented: true,
+  },
+  "encoding/base64": {
+    title: "Base64编解码",
+    component: Base64Encoder,
+    implemented: true,
+  },
+  "format/json-formatter": {
+    title: "JSON格式化",
+    component: JsonFormatter,
+    implemented: true,
+  },
+  "format/json-to-typescript": {
+    title: "JSON转TypeScript类型",
+    component: JsonToTypeScript,
+    implemented: true,
+  },
+  "encoding/qr-code-generator": {
+    title: "二维码生成器",
+    component: QRCodeGenerator,
+    implemented: true,
+  },
+  "format/css-beautifier": {
+    title: "CSS格式化",
+    component: CssBeautifier,
+    implemented: true,
+  },
+};

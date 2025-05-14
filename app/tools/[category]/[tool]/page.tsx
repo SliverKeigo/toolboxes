@@ -6,47 +6,8 @@ import Link from "next/link";
 import { Suspense, useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 
-import { categoryMap, categories, Category, Tool } from "@/lib/data";
-import UuidGenerator from "@/components/tools/uuid-generator";
-import CaseConverter from "@/components/tools/case-converter";
-import Base64Encoder from "@/components/tools/base64-encoder";
-import JsonFormatter from "@/components/tools/json-formatter";
-import JsonToTypeScript from "@/components/tools/json-to-typescript";
-import QRCodeGenerator from "@/components/tools/qr-code-generator";
+import { categoryMap, categories, Category, Tool, toolMap } from "@/lib/data";
 import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
-// 工具映射表
-const toolMap = {
-  "generator/uuid-generator": {
-    title: "UUID生成器",
-    component: UuidGenerator,
-    implemented: true,
-  },
-  "text/case-converter": {
-    title: "大小写转换",
-    component: CaseConverter,
-    implemented: true,
-  },
-  "encoding/base64": {
-    title: "Base64编解码",
-    component: Base64Encoder,
-    implemented: true,
-  },
-  "format/json-formatter": {
-    title: "JSON格式化",
-    component: JsonFormatter,
-    implemented: true,
-  },
-  "format/json-to-typescript": {
-    title: "JSON转TypeScript类型",
-    component: JsonToTypeScript,
-    implemented: true,
-  },
-  "encoding/qr-code-generator": {
-    title: "二维码生成器",
-    component: QRCodeGenerator,
-    implemented: true,
-  },
-};
 
 // 提取同分类工具组件以改善数据处理
 const SameCategoryTools = ({

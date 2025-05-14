@@ -60,7 +60,6 @@ export default function QRCodeGenerator() {
     setQrValue(inputText);
   };
 
-  // Telegraph图片上传
   const uploadToTelegraph = async (file: File) => {
     setIsUploading(true);
     setErrorMessage("");
